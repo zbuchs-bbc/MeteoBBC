@@ -21,14 +21,14 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by nwicks on 31.03.2015.
+ * Created by zbuchs on 17.03.2015.
  */
 public class JsonLoadingTask extends AsyncTask<String, Void, List<Temperature>> {
 
 
     public static final  String LOG_TAG = JsonLoadingTask.class.getCanonicalName();
 
-    private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s";
+    private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=de";
 
     private MainActivity activity;
 
@@ -92,7 +92,8 @@ public class JsonLoadingTask extends AsyncTask<String, Void, List<Temperature>> 
                 JSONObject temperatureData = data.getJSONObject(key);
 
                 Temperature temperature = new Temperature();
-                temperature.setTemperature(temperatureData.getInt("temp"));
+                temperature.setTemperature(temperatureData.getDouble("temp"));
+
 
                 result.add(temperature);
             }
@@ -100,6 +101,7 @@ public class JsonLoadingTask extends AsyncTask<String, Void, List<Temperature>> 
 
         return result;
     }
+
     private String readInput(InputStream inputStream) throws IOException {
         StringBuilder resultBuilder = new StringBuilder();
 

@@ -2,7 +2,6 @@ package ch.bbcag.meteobbc.meteobbc;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +20,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void displayLoadingDataFailedError() {
-        Toast.makeText(this, "Errör", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show();
     }
 
     public void setData(List<Temperature> result) {
@@ -32,7 +31,7 @@ public class MainActivity extends ActionBarActivity {
             sb.append("\n\n");
         }
 
-        ListView dataView = (ListView) findViewById(R.id.data);
+        TextView dataView = (TextView) findViewById(R.id.data);
         dataView.setText(sb.toString());
 
     }

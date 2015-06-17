@@ -20,12 +20,12 @@
         android:fontFamily="assets/font.otf"
         android:autoText="false" />
 
-    <ListView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/data"
+        android:layout_marginTop="49dp"
         android:layout_below="@+id/textView2"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="138dp" />
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
