@@ -1,9 +1,12 @@
 package ch.bbcag.meteobbc.meteobbc;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -12,27 +15,25 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        JsonLoadingTask loadingTask = new JsonLoadingTask(this);
+        loadingTask.execute("Zürich");
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+    public void displayLoadingDataFailedError() {
+        Toast.makeText(this, "Errör", Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+    public void setData(List<Temperature> result) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        StringBuilder sb = new StringBuilder();
+        for (Temperature temperature : result) {
+            sb.append(temperature.toString());
+            sb.append("\n\n");
         }
 
-        return super.onOptionsItemSelected(item);
+        ListView dataView = (ListView) findViewById(R.id.data);
+        dataView.setText(sb.toString());
+
     }
 }
