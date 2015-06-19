@@ -1,8 +1,5 @@
 package ch.bbcag.meteobbc.meteobbc;
 
-/**
- * Created by zbuchs on 11.06.2015.
- */
 public class Temperature {
 
     private double temperature;
@@ -13,6 +10,8 @@ public class Temperature {
 
     private String wetterArt;
     private String stadtName;
+
+    CityWeather cityWeather;
 
     public String getStadtName() {
         return stadtName;
@@ -80,15 +79,6 @@ public class Temperature {
         resultBuilder.append(temperature);
         resultBuilder.append("\n");
 
-        //Sun goes up
-        //resultBuilder.append("Sonnenaufgang: ");
-        //resultBuilder.append(sunGoesUp);
-        //resultBuilder.append("\n");
-
-        //Sun goes down
-//        resultBuilder.append("Sonnenuntergant: ");
-        //      resultBuilder.append(sunGoesDown);
-        // resultBuilder.append("\n");
 
         //HoechstTemperatur
         // resultBuilder.append("Hoechstemperatur: ");
@@ -101,14 +91,14 @@ public class Temperature {
         //resultBuilder.append("\n");
 
         //Stadtname
-        //resultBuilder.append("Name: ");
-        //resultBuilder.append(stadtName);
-        // resultBuilder.append("\n");
+        resultBuilder.append("Name: ");
+        resultBuilder.append(stadtName);
+        resultBuilder.append("\n");
 
         //Wetterart
-        //resultBuilder.append("Wetterart: ");
-        // resultBuilder.append(wetterArt);
-        //resultBuilder.append("\n");
+        resultBuilder.append("Wetterart: ");
+        resultBuilder.append(wetterArt);
+        resultBuilder.append("\n");
 
         return resultBuilder.toString();
     }

@@ -1,7 +1,5 @@
 package ch.bbcag.meteobbc.meteobbc;
 
-
-import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -16,30 +14,28 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-/**
- * Created by zbuchs on 17.03.2015.
- */
-public class JsonLoadingTask extends AsyncTask<String, Void, List<Temperature>> {
+public class JsonLoadingTask extends AsyncTask<String, Void, Temperature> {
 
 
-    public static final  String LOG_TAG = JsonLoadingTask.class.getCanonicalName();
 
+
+
+    public static final String LOG_TAG = JsonLoadingTask.class.getCanonicalName();
     private static final String API_URL = "http://api.openweathermap.org/data/2.5/weather?q=%s&units=metric&lang=de";
+    private WeatherArrayAdapter adapter;
+    private ConnectivityManager connectivityManager;
 
-    private MainActivity activity;
 
-    public JsonLoadingTask(MainActivity activity){
-        this.activity = activity;
+    public JsonLoadingTask(WeatherArrayAdapter adapter, ConnectivityManager connectivityManager) {
+        this.adapter = adapter;
+        this.connectivityManager = connectivityManager;
     }
 
-
     @Override
-    protected List<Temperature> doInBackground(String... params) {
-        List<Temperature> result = null;
+    protected Temperature doInBackground(String... params) {
+        Temperature result = null;
 
         String ort = params[0];
         if (isNetworkConnectionAvailable()) {
@@ -70,37 +66,46 @@ public class JsonLoadingTask extends AsyncTask<String, Void, List<Temperature>> 
     }
 
     private boolean isNetworkConnectionAvailable() {
-        ConnectivityManager connectivityService = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityService.getActiveNetworkInfo();
+
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
         return null != networkInfo && networkInfo.isConnected();
     }
 
-    private List<Temperature> parseData(InputStream inputStream) throws IOException, JSONException {
+    private Temperature parseData(InputStream inputStream) throws IOException, JSONException {
 
-        List<Temperature> result = new ArrayList<>();
 
         String input = readInput(inputStream);
         JSONObject data = new JSONObject(input);
+        Temperature temperature = new Temperature();
+
+        String city = data.getString("name");
+        temperature.setStadtName(city);
 
         Iterator<String> keyIterator = data.keys();
-        while(keyIterator.hasNext()){
+        while (keyIterator.hasNext()) {
 
-            String key = keyIterator.next();
+            try
+            {
+                String key = keyIterator.next();
 
-            if(key.equals("main")){
                 JSONObject temperatureData = data.getJSONObject(key);
 
-                Temperature temperature = new Temperature();
-                temperature.setTemperature(temperatureData.getDouble("temp"));
+                if (key.equals("main")) {
 
-
-                result.add(temperature);
+                    temperature.setTemperature(temperatureData.getDouble("temp"));
+                }
             }
+            catch (Exception ex)
+            {
+                Log.v("Task", ex.toString());
+            }
+
         }
 
-        return result;
+        return temperature;
     }
+
 
     private String readInput(InputStream inputStream) throws IOException {
         StringBuilder resultBuilder = new StringBuilder();
@@ -116,15 +121,11 @@ public class JsonLoadingTask extends AsyncTask<String, Void, List<Temperature>> 
     }
 
 
-
     @Override
-    protected void onPostExecute(List<Temperature> result) {
-        if (null == result) {
-            activity.displayLoadingDataFailedError();
+    protected void onPostExecute(Temperature result) {
 
-        } else {
-            activity.setData(result);
-        }
+        adapter.add(new CityWeather(result.getStadtName(), Double.toString(result.getTemperature())));
+        adapter.notifyDataSetChanged();
 
     }
 }
